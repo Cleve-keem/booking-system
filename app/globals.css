@@ -1,8 +1,17 @@
 @import "tailwindcss";
 
-:root {
+/* :root {
   --background: #ffffff;
   --foreground: #171717;
+  --color-ink-950: #0b0b0c;
+  --color-ink-900: #131315;
+  --color-ink-800: #1c1c1f;
+  --color-bone-50: #f7f4ee;
+  --color-bone-200: #e6dfd1;
+  --color-gold-400: #d4a64a;
+  --color-gold-600: #9c7222;
+  --color-pole-red: #c8362d;
+  --color-success: #3f9d6b;
 }
 
 @theme inline {
@@ -23,4 +32,357 @@ body {
   background: var(--background);
   color: var(--foreground);
   font-family: Arial, Helvetica, sans-serif;
+} */
+
+/* Landing page styles. Everything is prefixed lp- so nothing collides with the rest of your app.
+   ASSUMPTION: Tailwind (v3 or v4) is already set up in globals.css; import this file after it.
+   ASSUMPTION: this is a landing-page project, so the html/body rules below are global. */
+html {
+  background: #000; /* shows behind the notch/overscroll and matches the hero and footer */
+  box-sizing: border-box;
+  padding-top: env(safe-area-inset-top, 0px);
+  padding-bottom: env(safe-area-inset-bottom, 0px);
+  scroll-padding-top: env(safe-area-inset-top, 0px);
+}
+
+body {
+  background: #fff;
+  color: #000;
+  font-family: var(--font-sans), system-ui, sans-serif;
+  overflow-x: hidden;
+  -webkit-font-smoothing: antialiased;
+}
+
+.lp-display {
+  font-family: var(--font-display), Georgia, serif;
+}
+
+:focus-visible {
+  outline: 2px solid currentColor;
+  outline-offset: 3px;
+}
+
+/* Buttons */
+.lp-btn {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  gap: 0.5rem;
+  border-radius: 999px;
+  padding: 0.9rem 1.6rem;
+  font-weight: 600;
+  transition: transform 0.25s;
+}
+
+.lp-btn:hover {
+  transform: translateY(-2px);
+}
+
+.lp-btn-sm {
+  padding: 0.65rem 1.25rem;
+  font-size: 0.875rem;
+}
+
+.lp-btn-lg {
+  padding: 1rem 2.25rem;
+  font-size: 1.125rem;
+}
+
+.lp-btn-w {
+  background: #fff;
+  color: #000;
+}
+
+.lp-btn-k {
+  background: #000;
+  color: #fff;
+}
+
+/* Stacked sections with curved tops */
+.lp-sec {
+  position: relative;
+  margin-top: -2.5rem;
+  border-radius: 2.5rem 2.5rem 0 0;
+}
+
+/* Hero headline word reveal */
+.lp-w {
+  display: inline-block;
+  overflow: hidden;
+  vertical-align: top;
+  padding-bottom: 0.12em;
+  margin-bottom: -0.12em;
+}
+
+.lp-wi {
+  display: inline-block;
+  will-change: transform;
+}
+
+/* .lp-w {
+  display: inline-block;
+  overflow: hidden;
+  vertical-align: top;
+  padding-bottom: 0.12em;
+  margin-bottom: -0.12em;
+}
+.lp-wi {
+  display: inline-block;
+} */
+
+/* Hero 3D scene */
+.lp-pole {
+  position: absolute;
+  inset: 0;
+  margin: auto;
+  width: 112px;
+  height: 339.4px;
+  border-radius: 56px;
+  background: repeating-linear-gradient(-45deg, #fff 0 20px, #000 20px 40px);
+  box-shadow:
+    0 0 0 6px rgba(255, 255, 255, 0.12),
+    0 50px 90px rgba(255, 255, 255, 0.1);
+  animation: lp-stripes 3s linear infinite;
+}
+
+.lp-pole::after {
+  content: "";
+  position: absolute;
+  inset: 0;
+  border-radius: inherit;
+  background: linear-gradient(
+    90deg,
+    rgba(0, 0, 0, 0.6),
+    rgba(255, 255, 255, 0) 28%,
+    rgba(255, 255, 255, 0.28) 48%,
+    rgba(255, 255, 255, 0) 68%,
+    rgba(0, 0, 0, 0.6)
+  );
+}
+
+@keyframes lp-stripes {
+  to {
+    background-position: 0 56.57px;
+  }
+}
+
+.lp-ring {
+  position: absolute;
+  inset: 0;
+  margin: auto;
+  border-radius: 50%;
+  border: 1px solid rgba(255, 255, 255, 0.22);
+}
+
+.lp-gl {
+  position: absolute;
+  width: 176px;
+  padding: 0.9rem 1rem;
+  border-radius: 1.1rem;
+  background: rgba(255, 255, 255, 0.1);
+  border: 1px solid rgba(255, 255, 255, 0.25);
+  backdrop-filter: blur(10px);
+  -webkit-backdrop-filter: blur(10px);
+}
+
+/* About */
+.lp-frame {
+  padding: 12px;
+  border: 1px solid #000;
+}
+
+.lp-frame > div {
+  border: 1px solid #000;
+  padding: 10px;
+}
+
+.lp-dc::first-letter {
+  font-family: var(--font-display), Georgia, serif;
+  float: left;
+  font-size: 4rem;
+  line-height: 0.8;
+  padding: 0.3rem 0.6rem 0 0;
+}
+
+/* Service cards: grow on hover/tap and reveal photo tiles */
+.lp-card {
+  position: relative;
+}
+
+.lp-card:is(.lp-open, :hover) {
+  z-index: 10;
+}
+
+.lp-cd {
+  border: 1px solid rgba(255, 255, 255, 0.15);
+  border-radius: 1.5rem;
+  padding: 1.4rem;
+  background: rgba(255, 255, 255, 0.04);
+  transition:
+    transform 0.5s cubic-bezier(0.2, 0.8, 0.2, 1),
+    box-shadow 0.5s,
+    background 0.35s,
+    color 0.35s;
+}
+
+.lp-card:is(.lp-open, :hover) .lp-cd {
+  transform: scale(1.07);
+  background: #fff;
+  color: #000;
+  box-shadow: 0 30px 90px rgba(255, 255, 255, 0.14);
+}
+
+.lp-more {
+  display: grid;
+  grid-template-rows: 0fr;
+  transition: grid-template-rows 0.55s cubic-bezier(0.2, 0.8, 0.2, 1);
+}
+
+.lp-more-in {
+  overflow: hidden;
+  min-height: 0;
+}
+
+.lp-card:is(.lp-open, :hover) .lp-more {
+  grid-template-rows: 1fr;
+}
+
+.lp-card:is(.lp-open, :hover) .lp-hint {
+  display: none;
+}
+
+.lp-tile {
+  position: relative;
+  overflow: hidden;
+  border-radius: 0.9rem;
+  background: linear-gradient(160deg, #2c2c30, #000);
+  transition: transform 0.5s;
+}
+
+.lp-tile:hover {
+  transform: scale(1.04) rotate(-1deg);
+}
+
+.lp-tile small {
+  position: absolute;
+  left: 0.5rem;
+  bottom: 0.4rem;
+  font-size: 11px;
+  color: #fff;
+  opacity: 0.6;
+}
+
+/* Testimonials: two opposite marquees that pause on hover or touch */
+.lp-mq {
+  overflow: hidden;
+  -webkit-mask-image: linear-gradient(
+    90deg,
+    transparent,
+    #000 8%,
+    #000 92%,
+    transparent
+  );
+  mask-image: linear-gradient(
+    90deg,
+    transparent,
+    #000 8%,
+    #000 92%,
+    transparent
+  );
+}
+
+.lp-track {
+  display: flex;
+  gap: 1rem;
+  width: max-content;
+  padding: 0.5rem 0;
+  animation: lp-move 60s linear infinite;
+}
+
+.lp-rev .lp-track {
+  animation-direction: reverse;
+  animation-duration: 70s;
+}
+
+.lp-mq:hover .lp-track,
+.lp-held .lp-track {
+  animation-play-state: paused;
+}
+
+@keyframes lp-move {
+  to {
+    transform: translateX(-50%);
+  }
+}
+
+/* Floating book button */
+.lp-fab {
+  position: fixed;
+  right: 1rem;
+  bottom: calc(env(safe-area-inset-bottom, 0px) + 1rem);
+  z-index: 60;
+  opacity: 0;
+  pointer-events: none;
+  transform: translateY(20px);
+  transition:
+    opacity 0.4s,
+    transform 0.4s;
+  box-shadow:
+    0 12px 40px rgba(0, 0, 0, 0.35),
+    0 0 0 2px #000;
+}
+
+.lp-fab.lp-fab-on {
+  opacity: 1;
+  pointer-events: auto;
+  transform: none;
+}
+
+/* Start hidden so GSAP can animate in without a flash. Overridden when JS is off or motion is reduced. */
+[data-hero],
+[data-scene],
+.lp-rv,
+.lp-card {
+  opacity: 0;
+}
+
+.lp-rv {
+  transform: translateY(50px);
+}
+
+.lp-card {
+  transform: translateY(70px) scale(0.94);
+}
+
+.lp-wi {
+  transform: translateY(115%);
+}
+
+.lp-rv.lp-in,
+.lp-card.lp-in {
+  opacity: 1;
+  transform: none;
+}
+
+@media (prefers-reduced-motion: reduce) {
+  [data-hero],
+  [data-scene],
+  .lp-rv,
+  .lp-card {
+    opacity: 1;
+    transform: none;
+  }
+
+  .lp-wi {
+    transform: none;
+  }
+
+  .lp-pole,
+  .lp-track {
+    animation: none;
+  }
+
+  .lp-mq {
+    overflow-x: auto;
+  }
 }
