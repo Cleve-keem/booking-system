@@ -3,7 +3,6 @@
 import { useEffect, useState } from 'react';
 import BookButton from '@/components/shared/book-button';
 
-/** Appears after the hero so the Book call to action is always one tap away. */
 export default function FloatingBook() {
   const [on, setOn] = useState(false);
 

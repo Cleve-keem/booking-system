@@ -1,8 +1,6 @@
 @import "tailwindcss";
 
 :root {
-  --background: #ffffff;
-  --foreground: #171717;
   --color-ink-950: #0b0b0c;
   --color-ink-900: #131315;
   --color-ink-800: #1c1c1f;
@@ -15,30 +13,20 @@
 }
 
 @theme inline {
-  --color-background: var(--background);
-  --color-foreground: var(--foreground);
   --font-sans: var(--font-geist-sans);
   --font-mono: var(--font-geist-mono);
 }
 
-/* @media (prefers-color-scheme: dark) {
-  :root {
-    --background: #0a0a0a;
-    --foreground: #ededed;
-  }
-} */
-
-/* body {
-  background: var(--background);
-  color: var(--foreground);
-  font-family: Arial, Helvetica, sans-serif;
-}  */
-
-/* Landing page styles. Everything is prefixed lp- so nothing collides with the rest of your app.
-   ASSUMPTION: Tailwind (v3 or v4) is already set up in globals.css; import this file after it.
-   ASSUMPTION: this is a landing-page project, so the html/body rules below are global. */
 html {
-  background: #000; /* shows behind the notch/overscroll and matches the hero and footer */
+  background: #000;
+  box-sizing: border-box;
+  padding-top: env(safe-area-inset-top, 0px);
+  padding-bottom: env(safe-area-inset-bottom, 0px);
+  scroll-padding-top: env(safe-area-inset-top, 0px);
+}
+
+html {
+  background: #000;
   box-sizing: border-box;
   padding-top: env(safe-area-inset-top, 0px);
   padding-bottom: env(safe-area-inset-bottom, 0px);
@@ -116,56 +104,9 @@ body {
 
 .lp-wi {
   display: inline-block;
-  will-change: transform;
 }
 
-/* .lp-w {
-  display: inline-block;
-  overflow: hidden;
-  vertical-align: top;
-  padding-bottom: 0.12em;
-  margin-bottom: -0.12em;
-}
-.lp-wi {
-  display: inline-block;
-} */
-
-/* Hero 3D scene */
-.lp-pole {
-  position: absolute;
-  inset: 0;
-  margin: auto;
-  width: 112px;
-  height: 339.4px;
-  border-radius: 56px;
-  background: repeating-linear-gradient(-45deg, #fff 0 20px, #000 20px 40px);
-  box-shadow:
-    0 0 0 6px rgba(255, 255, 255, 0.12),
-    0 50px 90px rgba(255, 255, 255, 0.1);
-  animation: lp-stripes 3s linear infinite;
-}
-
-.lp-pole::after {
-  content: "";
-  position: absolute;
-  inset: 0;
-  border-radius: inherit;
-  background: linear-gradient(
-    90deg,
-    rgba(0, 0, 0, 0.6),
-    rgba(255, 255, 255, 0) 28%,
-    rgba(255, 255, 255, 0.28) 48%,
-    rgba(255, 255, 255, 0) 68%,
-    rgba(0, 0, 0, 0.6)
-  );
-}
-
-@keyframes lp-stripes {
-  to {
-    background-position: 0 56.57px;
-  }
-}
-
+/* Hero scene: decorative rings and floating glass cards around the 3D clipper */
 .lp-ring {
   position: absolute;
   inset: 0;
@@ -175,6 +116,7 @@ body {
 }
 
 .lp-gl {
+  pointer-events: none;
   position: absolute;
   width: 176px;
   padding: 0.9rem 1rem;
@@ -226,7 +168,7 @@ body {
 }
 
 .lp-card:is(.lp-open, :hover) .lp-cd {
-  transform: scale(1.07);
+  transform: scale(1.04);
   background: #fff;
   color: #000;
   box-shadow: 0 30px 90px rgba(255, 255, 255, 0.14);
@@ -272,6 +214,72 @@ body {
   opacity: 0.6;
 }
 
+/* Service rows: stacked on phones/tablets (a card grows taller), accordion on desktop (a card grows wider, height stays fixed) */
+.lp-row {
+  display: grid;
+  gap: 1.25rem;
+  align-items: start;
+}
+
+.lp-row + .lp-row {
+  margin-top: 1.25rem;
+}
+
+@media (min-width: 640px) {
+  .lp-row {
+    grid-template-columns: repeat(2, minmax(0, 1fr));
+  }
+}
+
+@media (min-width: 1024px) {
+  .lp-row {
+    display: flex;
+    align-items: stretch;
+  }
+
+  .lp-card {
+    flex: 1 1 0;
+    min-width: 0;
+    transition: flex-grow 0.6s cubic-bezier(0.2, 0.8, 0.2, 1);
+  }
+
+  .lp-card:is(.lp-open, :hover) {
+    flex-grow: 2.4;
+  }
+
+  .lp-cd {
+    height: 440px;
+    overflow: hidden;
+  }
+
+  .lp-card:is(.lp-open, :hover) .lp-cd {
+    transform: none;
+  }
+
+  .lp-more {
+    display: block;
+    opacity: 0;
+    transform: translateY(10px);
+    transition:
+      opacity 0.35s 0.15s,
+      transform 0.5s 0.15s;
+  }
+
+  .lp-more-in {
+    overflow: visible;
+  }
+
+  .lp-card:is(.lp-open, :hover) .lp-more {
+    opacity: 1;
+    transform: none;
+  }
+
+  .lp-more .lp-tile {
+    aspect-ratio: auto;
+    height: 200px;
+  }
+}
+
 /* Testimonials: two opposite marquees that pause on hover or touch */
 .lp-mq {
   overflow: hidden;
@@ -282,6 +290,7 @@ body {
     #000 92%,
     transparent
   );
+
   mask-image: linear-gradient(
     90deg,
     transparent,
@@ -377,7 +386,6 @@ body {
     transform: none;
   }
 
-  .lp-pole,
   .lp-track {
     animation: none;
   }

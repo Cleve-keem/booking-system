@@ -5,7 +5,7 @@ import FloatingBook from "@/features/bookings";
 import Footer from "@/features/footer";
 import Gallery from "@/features/gallery";
 import Header from "@/features/header/header";
-import Hero from "@/features/hero/hero";
+import Hero from "@/features/hero";
 import Services from "@/features/services";
 import Testimonials from "@/features/testimonials";
 

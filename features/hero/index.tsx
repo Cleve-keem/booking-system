@@ -1,11 +1,34 @@
 "use client";
 
 import { Fragment, useRef } from "react";
+import dynamic from "next/dynamic";
 import gsap from "gsap";
 import { useGSAP } from "@gsap/react";
 import BookButton from "@/components/shared/book-button";
 
 gsap.registerPlugin(useGSAP);
+
+const ClipperScene = dynamic(() => import("./clipper-scene"), { ssr: false });
+
+function SplitWords({ text }: { text: string }) {
+  const lines = text.split("\n");
+  return (
+    <>
+      {lines.map((line, li) => (
+        <Fragment key={li}>
+          {line.split(" ").map((w, wi) => (
+            <Fragment key={wi}>
+              <span className="lp-w">
+                <span className="lp-wi">{w}</span>
+              </span>{" "}
+            </Fragment>
+          ))}
+          {li < lines.length - 1 && <br />}
+        </Fragment>
+      ))}
+    </>
+  );
+}
 
 export default function Hero() {
   const root = useRef<HTMLElement>(null);
@@ -14,18 +37,23 @@ export default function Hero() {
     () => {
       const mm = gsap.matchMedia();
       mm.add("(prefers-reduced-motion: no-preference)", () => {
-        const scene = root.current!.querySelector<HTMLElement>(".lp-scene")!;
-        gsap.set(".lp-gl", { z: (i: number) => [110, 70, 140][i] });
-        gsap.set(".lp-ring", { rotationX: 68, z: -20 });
-        gsap.set(".lp-pole", { z: 50 });
+        const q = (sel: string) =>
+          gsap.utils.toArray<HTMLElement>(sel, root.current);
+        const words = q(".lp-wi");
+        const intro = q("[data-hero]");
+        const scene = q(".lp-scene");
+        const glass = q(".lp-gl");
+        const rings = q(".lp-ring");
 
-        let ready = false;
-        gsap
-          .timeline({
-            defaults: { ease: "power4.out" },
-            onComplete: () => {
-              ready = true;
-              gsap.to(".lp-gl", {
+        if (glass.length)
+          gsap.set(glass, { z: (i: number) => [110, 70, 140][i] });
+        if (rings.length) gsap.set(rings, { rotationX: 68, z: -20 });
+
+        const tl = gsap.timeline({
+          defaults: { ease: "power4.out" },
+          onComplete: () => {
+            if (glass.length)
+              gsap.to(glass, {
                 y: "+=14",
                 duration: 2.4,
                 yoyo: true,
@@ -33,67 +61,39 @@ export default function Hero() {
                 ease: "sine.inOut",
                 stagger: 0.4,
               });
-            },
-          })
-          .fromTo(
-            ".lp-wi",
+          },
+        });
+        if (words.length)
+          tl.fromTo(
+            words,
             { yPercent: 115 },
             { yPercent: 0, duration: 1.1, stagger: 0.07 },
             0.15,
-          )
-          .fromTo(
-            "[data-hero]",
+          );
+        if (intro.length)
+          tl.fromTo(
+            intro,
             { y: 24, opacity: 0 },
             { y: 0, opacity: 1, duration: 0.8, stagger: 0.1 },
             0.7,
-          )
-          .fromTo(
+          );
+        if (scene.length)
+          tl.fromTo(
             scene,
-            { scale: 0.7, rotationY: -35, rotationX: 15, opacity: 0 },
-            {
-              scale: 1,
-              rotationY: 0,
-              rotationX: 0,
-              opacity: 1,
-              duration: 1.6,
-              ease: "expo.out",
-            },
+            { scale: 0.8, opacity: 0 },
+            { scale: 1, opacity: 1, duration: 1.4, ease: "expo.out" },
             0.2,
-          )
-          .from(".lp-gl", { opacity: 0, duration: 1, stagger: 0.15 }, 0.9);
+          );
+        if (glass.length)
+          tl.from(glass, { opacity: 0, duration: 1, stagger: 0.15 }, 0.9);
 
-        gsap.to(".lp-ring", {
-          rotation: 360,
-          duration: 40,
-          repeat: -1,
-          ease: "none",
-        });
-
-        const rx = gsap.quickTo(scene, "rotationX", {
-          duration: 0.9,
-          ease: "power3",
-        });
-        const ry = gsap.quickTo(scene, "rotationY", {
-          duration: 0.9,
-          ease: "power3",
-        });
-        const el = root.current!;
-        const move = (e: PointerEvent) => {
-          if (!ready) return;
-          const r = el.getBoundingClientRect();
-          ry(((e.clientX - r.left) / r.width - 0.5) * 28);
-          rx(-((e.clientY - r.top) / r.height - 0.5) * 20);
-        };
-        const leave = () => {
-          rx(0);
-          ry(0);
-        };
-        el.addEventListener("pointermove", move);
-        el.addEventListener("pointerleave", leave);
-        return () => {
-          el.removeEventListener("pointermove", move);
-          el.removeEventListener("pointerleave", leave);
-        };
+        if (rings.length)
+          gsap.to(rings, {
+            rotation: 360,
+            duration: 40,
+            repeat: -1,
+            ease: "none",
+          });
       });
       return () => mm.revert();
     },
@@ -104,7 +104,7 @@ export default function Hero() {
     <section
       ref={root}
       id="home"
-      className="relative flex min-h-svh items-center overflow-hidden bg-black pb-28 pt-32 text-white"
+      className="relative flex min-h-100svh items-center overflow-hidden bg-black pb-28 pt-32 text-white"
     >
       <div className="mx-auto grid w-full max-w-6xl items-center gap-8 px-5 lg:grid-cols-2">
         <div>
@@ -137,7 +137,7 @@ export default function Hero() {
         </div>
 
         <div
-          className="relative h-95 sm:h-130"
+          className="relative h-105 sm:h-135"
           style={{ perspective: "1200px" }}
         >
           <div
@@ -153,7 +153,8 @@ export default function Hero() {
               className="lp-ring"
               style={{ width: 310, height: 310, borderStyle: "dashed" }}
             />
-            <div className="lp-pole" />
+            <ClipperScene />
+            {/* ASSUMPTION: sample values. Wire these to live availability once the booking API exists. */}
             <div className="lp-gl" style={{ top: "6%", left: 0 }}>
               <p className="text-xs text-white/60">Next free slot</p>
               <p className="mt-1 font-semibold">Today, 4:30 PM</p>
@@ -162,11 +163,14 @@ export default function Hero() {
               <p className="text-xs text-white/60">Home service</p>
               <p className="mt-1 font-semibold">Across Owerri</p>
             </div>
-            <div className="lp-gl" style={{ bottom: "4%", left: "10%" }}>
+            <div className="lp-gl" style={{ bottom: "8%", left: "10%" }}>
               <p className="text-xs text-white/60">Your booking</p>
               <p className="mt-1 font-semibold">Slot locked</p>
             </div>
           </div>
+          <p className="absolute inset-x-0 bottom-0 text-center text-sm text-white/50">
+            Drag to spin the clipper
+          </p>
         </div>
       </div>
     </section>

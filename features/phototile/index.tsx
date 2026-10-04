@@ -1,7 +1,6 @@
 import { PHOTOS } from "@/constant/landing-data";
 import Image from "next/image";
 
-// Placeholder variants: front, mirrored, close-up. Replaced automatically once PHOTOS has real files.
 const VARIANTS = ["none", "scaleX(-1)", "scale(1.3) translateY(10%)"];
 
 const Head = () => (

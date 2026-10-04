@@ -2,7 +2,6 @@ import type { Metadata, Viewport } from "next";
 import { Bodoni_Moda, Manrope } from "next/font/google";
 import "./globals.css";
 
-// Self-hosted by next/font: no layout shift, no external request at runtime.
 const display = Bodoni_Moda({
   subsets: ["latin"],
   variable: "--font-display",
@@ -20,7 +19,6 @@ export const metadata: Metadata = {
     "Barber shop visits and home service in Owerri. Pick a time, pay a small deposit, and your chair is locked in.",
 };
 
-// viewport-fit=cover lets the page draw under the notch; landing.css adds the safe-area padding.
 export const viewport: Viewport = {
   width: "device-width",
   initialScale: 1,
@@ -35,7 +33,6 @@ export default function RootLayout({
   return (
     <html lang="en">
       <body className={`${display.variable} ${sans.variable}`}>
-        {/* Without JS nothing can animate in, so show everything. */}
         <noscript>
           <style>{`[data-hero],[data-scene],.lp-rv,.lp-card{opacity:1!important;transform:none!important}.lp-wi{transform:none!important}`}</style>
         </noscript>
