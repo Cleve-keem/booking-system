@@ -38,7 +38,7 @@ export default function About() {
           </h2>
           <p className="lp-dc mt-6 leading-relaxed text-black/70">
             Every cut starts with a conversation and ends with a mirror check.
-            Crown Cuts pairs the patience of a classic barbershop with a booking
+            Dammy Cuts pairs the patience of a classic barbershop with a booking
             system that respects your time, whether you sit in the chair at the
             shop or invite the barber to your door.
           </p>
